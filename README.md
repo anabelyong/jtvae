@@ -31,5 +31,5 @@ The following directories provides scripts for the experiments in our original I
 
 
 # Contact
-Wengong Jin (wengong@csail.mit.edu)
-Anabel Yong (ucabyon@ucl.ac.uk/ anabel.yong@ignotalabs.ai)
+* Wengong Jin (wengong@csail.mit.edu)
+* Anabel Yong (ucabyon@ucl.ac.uk/ anabel.yong@ignotalabs.ai)
