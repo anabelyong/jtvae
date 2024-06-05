@@ -28,4 +28,3 @@ class Vocab(object):
 
     def size(self):
         return len(self.vocab)
-

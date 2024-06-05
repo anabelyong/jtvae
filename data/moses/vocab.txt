@@ -529,3 +529,5 @@ OCl
 OS
 O=S
 S
+C1=CN=NC=C1
+C1=NC=NN=C1

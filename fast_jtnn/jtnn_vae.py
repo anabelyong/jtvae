@@ -1,15 +1,15 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from mol_tree import Vocab, MolTree
-from nnutils import create_var, flatten_tensor, avg_pool
-from jtnn_enc import JTNNEncoder
-from jtnn_dec import JTNNDecoder
-from mpn import MPN
-from jtmpn import JTMPN
-from datautils import tensorize
+from .mol_tree import Vocab, MolTree
+from .nnutils import create_var, flatten_tensor, avg_pool
+from .jtnn_enc import JTNNEncoder
+from .jtnn_dec import JTNNDecoder
+from .mpn import MPN
+from .jtmpn import JTMPN
+from .datautils import tensorize
 
-from chemutils import enum_assemble, set_atommap, copy_edit_mol, attach_mols
+from .chemutils import enum_assemble, set_atommap, copy_edit_mol, attach_mols
 import rdkit
 import rdkit.Chem as Chem
 import copy, math
@@ -20,21 +20,21 @@ class JTNNVAE(nn.Module):
         super(JTNNVAE, self).__init__()
         self.vocab = vocab
         self.hidden_size = hidden_size
-        self.latent_size = latent_size = latent_size / 2 #Tree and Mol has two vectors
-
+        #self.latent_size = latent_size = latent_size / 2 #Tree and Mol has two vectors
+        self.latent_size=int(latent_size)
         self.jtnn = JTNNEncoder(hidden_size, depthT, nn.Embedding(vocab.size(), hidden_size))
-        self.decoder = JTNNDecoder(vocab, hidden_size, latent_size, nn.Embedding(vocab.size(), hidden_size))
+        self.decoder = JTNNDecoder(vocab, hidden_size, int(latent_size), nn.Embedding(vocab.size(), hidden_size))
 
         self.jtmpn = JTMPN(hidden_size, depthG)
         self.mpn = MPN(hidden_size, depthG)
 
-        self.A_assm = nn.Linear(latent_size, hidden_size, bias=False)
+        self.A_assm = nn.Linear(int(latent_size), hidden_size, bias=False)
         self.assm_loss = nn.CrossEntropyLoss(size_average=False)
 
-        self.T_mean = nn.Linear(hidden_size, latent_size)
-        self.T_var = nn.Linear(hidden_size, latent_size)
-        self.G_mean = nn.Linear(hidden_size, latent_size)
-        self.G_var = nn.Linear(hidden_size, latent_size)
+        self.T_mean = nn.Linear(hidden_size, int(latent_size))
+        self.T_var = nn.Linear(hidden_size, int(latent_size))
+        self.G_mean = nn.Linear(hidden_size, int(latent_size))
+        self.G_var = nn.Linear(hidden_size, int(latent_size))
 
     def encode(self, jtenc_holder, mpn_holder):
         tree_vecs, tree_mess = self.jtnn(*jtenc_holder)
@@ -47,7 +47,19 @@ class JTNNVAE(nn.Module):
         tree_vecs, _, mol_vecs = self.encode(jtenc_holder, mpn_holder)
         return torch.cat([tree_vecs, mol_vecs], dim=-1)
 
-    def encode_latent(self, jtenc_holder, mpn_holder):
+    # def encode_latent(self, jtenc_holder, mpn_holder):
+    #     tree_vecs, _ = self.jtnn(*jtenc_holder)
+    #     mol_vecs = self.mpn(*mpn_holder)
+    #     tree_mean = self.T_mean(tree_vecs)
+    #     mol_mean = self.G_mean(mol_vecs)
+    #     tree_var = -torch.abs(self.T_var(tree_vecs))
+    #     mol_var = -torch.abs(self.G_var(mol_vecs))
+    #     return torch.cat([tree_mean, mol_mean], dim=1), torch.cat([tree_var, mol_var], dim=1)
+
+    def encode_latent(self, smiles_list):
+        tree_batch = [MolTree(s) for s in smiles_list]
+        _, jtenc_holder, mpn_holder = tensorize(tree_batch, self.vocab, assm=False)
+
         tree_vecs, _ = self.jtnn(*jtenc_holder)
         mol_vecs = self.mpn(*mpn_holder)
         tree_mean = self.T_mean(tree_vecs)
@@ -193,7 +205,7 @@ class JTNNVAE(nn.Module):
 
         backup_mol = Chem.RWMol(cur_mol)
         pre_mol = cur_mol
-        for i in xrange(cand_idx.numel()):
+        for i in range(cand_idx.numel()):
             cur_mol = Chem.RWMol(backup_mol)
             pred_amap = cand_amap[cand_idx[i].item()]
             new_global_amap = copy.deepcopy(global_amap)
@@ -222,4 +234,3 @@ class JTNNVAE(nn.Module):
             if not has_error: return cur_mol, cur_mol
 
         return None, pre_mol
-

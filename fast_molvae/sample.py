@@ -1,7 +1,7 @@
 import torch
 import torch.nn as nn
-
 import math, random, sys
+sys.path.append('../')
 import argparse
 from fast_jtnn import *
 import rdkit
@@ -29,5 +29,5 @@ model.load_state_dict(torch.load(args.model))
 model = model.cuda()
 
 torch.manual_seed(0)
-for i in xrange(args.nsample):
-    print model.sample_prior()
+for i in range(args.nsample):
+    print(model.sample_prior())
