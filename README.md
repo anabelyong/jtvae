@@ -1,22 +1,22 @@
-# Junction Tree Variational Autoencoder for Molecular Graph Generation
+# Junction Tree Variational Autoencoder for Molecular Graph Generation (Python 3.7)
 
-Official implementation of our Junction Tree Variational Autoencoder [https://arxiv.org/abs/1802.04364](https://arxiv.org/abs/1802.04364)
-
-# Update
-We have made architecture improvements to JT-VAE. We recommend you to check our new repository at https://github.com/wengong-jin/hgraph2graph/. This repo contains a molecular language model pre-trained on ChEMBL (1.8 million compounds) and scripts for property-guided molecule generation. All scripts are written in python 3.7 and pytorch.
+Official implementation of our Junction Tree Variational Autoencoder [https://arxiv.org/abs/1802.04364](https://arxiv.org/abs/1802.04364). Inspired by [https://github.com/Bibyutatsu/FastJTNNpy3] and [https://github.com/hello-maker/JunctionTreeVAE/tree/main]
 
 # Accelerated Version
-We have accelerated our code! The new code is in `fast_jtnn/`, and the VAE training script is in `fast_molvae/`. Please refer to `fast_molvae/README.md` for details.
+I have implemented the JTVAE with 'fast_molvae/' and 'fast_jtnn/'. 
 
 # Requirements
 * Linux (We only tested on Ubuntu)
-* RDKit (version >= 2017.09)
-* Python (version == 2.7)
-* PyTorch (version >= 0.2)
+* RDKit (version >= 2019.09.01)
+* Python (version == 3.7)
+* PyTorch (version >= 1.13)
 
 To install RDKit, please follow the instructions here [http://www.rdkit.org/docs/Install.html](http://www.rdkit.org/docs/Install.html)
 
 We highly recommend you to use conda for package management.
+
+# Tutorial
+Head to 'fast_molvae/README.md'
 
 # Quick Start
 The following directories contains the most up-to-date implementations of our model:
@@ -32,3 +32,4 @@ The following directories provides scripts for the experiments in our original I
 
 # Contact
 Wengong Jin (wengong@csail.mit.edu)
+Anabel Yong (ucabyon@ucl.ac.uk/ anabel.yong@ignotalabs.ai)
