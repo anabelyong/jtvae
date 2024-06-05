@@ -16,7 +16,7 @@ To install RDKit, please follow the instructions here [http://www.rdkit.org/docs
 We highly recommend you to use conda for package management.
 
 # Tutorial
-Head to 'fast_molvae/README.md'
+* Head to 'fast_molvae/README.md'
 
 # Quick Start
 The following directories contains the most up-to-date implementations of our model:
